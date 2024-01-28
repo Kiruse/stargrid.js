@@ -1,0 +1,18 @@
+{
+  "name": "@kiruse/stargrid",
+  "version": "0.1.0",
+  "description": "Stargrid is a blockchain event repeater for the Cosmos ecosystem.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@kiruse/typed-events": "^1.0.2",
+    "ws": "^8.16.0"
+  }
+}
