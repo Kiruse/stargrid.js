@@ -9,6 +9,7 @@ export interface Block {
 }
 
 export interface Tx {
+  id: number;
   raw: string;
   error?: TxError;
   height: bigint;
@@ -24,9 +25,31 @@ export interface Event {
   attributes: Record<string, Attribute>;
 }
 
+export interface EventFilter {
+  name: string;
+  attributes: Record<string, AttributeFilter>;
+}
+
 export interface Attribute {
   value: string;
   indexed: boolean;
+}
+
+export type AttributeFilter = AttributeFilterOneOf | AttributeFilterAllOf | AttributeFilterAnyOf | AttributeFilterNot | AttributeFilterMatch;
+export interface AttributeFilterOneOf {
+  oneOf: AttributeFilter[];
+}
+export interface AttributeFilterAllOf {
+  allOf: AttributeFilter[];
+}
+export interface AttributeFilterAnyOf {
+  anyOf: AttributeFilter[];
+}
+export interface AttributeFilterNot {
+  not: AttributeFilter;
+}
+export interface AttributeFilterMatch {
+  match: string;
 }
 
 export interface TxError {
