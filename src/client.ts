@@ -1,7 +1,7 @@
-import { WebSocket } from 'ws';
 import { Event, EventHandler } from '@kiruse/typed-events';
-import { Block, EventFilter, Tx } from './types';
+import { WebSocket } from 'ws';
 import { StargridSubscriptionError } from './errors';
+import { AttributeFilter, Block, EventFilter, Tx } from './types';
 
 export interface CloseFrame {
   code: number;
@@ -112,7 +112,15 @@ export default class StargridClient {
       subscribe: {
         txs: {
           id,
-          filters,
+          filters: filters.map(filter => {
+            const entries = Object.entries(filter);
+            if (entries.length !== 1) throw new Error('Invalid filter. Should take the shape `{ [name]: { ...attribute_filters } }`');
+            const [name, attributes] = entries[0];
+            return {
+              name,
+              attributes,
+            };
+          }),
         },
       },
     }));
@@ -130,7 +138,6 @@ export default class StargridClient {
 
     const emitter = Event<Tx>();
     const unsub = this.#onTx(({ args: tx }) => {
-      console.log(tx.id);
       if (tx.id === id) emitter.emit(tx);
     });
 

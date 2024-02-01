@@ -25,9 +25,8 @@ export interface Event {
   attributes: Record<string, Attribute>;
 }
 
-export interface EventFilter {
-  name: string;
-  attributes: Record<string, AttributeFilter>;
+export type EventFilter = {
+  [name: string]: Record<string, AttributeFilter>;
 }
 
 export interface Attribute {
