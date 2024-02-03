@@ -21,17 +21,17 @@ export interface Tx {
 }
 
 export interface Event {
+  /** Name of this event as encountered in the blockchain tx logs */
   name: string;
-  attributes: Record<string, Attribute>;
+  /** Alias for `name` */
+  type: string;
+  attributes: Record<string, string>;
+  /** Names of attributes which are indexed by the chain. */
+  indexes: string[];
 }
 
 export type EventFilter = {
   [name: string]: Record<string, AttributeFilter>;
-}
-
-export interface Attribute {
-  value: string;
-  indexed: boolean;
 }
 
 export type AttributeFilter = AttributeFilterOneOf | AttributeFilterAllOf | AttributeFilterAnyOf | AttributeFilterNot | AttributeFilterMatch;

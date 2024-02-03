@@ -1,7 +1,14 @@
 import { Event, EventHandler } from '@kiruse/typed-events';
 import { WebSocket } from 'ws';
 import { StargridSubscriptionError } from './errors';
-import { AttributeFilter, Block, EventFilter, Tx } from './types';
+import { Block, EventFilter, Tx } from './types';
+
+interface RawAttributes {
+  [key: string]: {
+    value: string;
+    indexed: boolean;
+  };
+}
 
 export interface CloseFrame {
   code: number;
@@ -31,7 +38,7 @@ export default class StargridClient {
   }
 
   /** Connect to the Stargrid server. By default, attempts to connect to a local server. */
-  connect(endpoint = 'ws://localhost:27043', timeout = 5000) {
+  connect(endpoint = 'ws://localhost:5566', timeout = 5000) {
     if (this.#ws) this.#ws.close();
     const ws = new WebSocket(endpoint);
     this.#ws = ws;
@@ -74,7 +81,17 @@ export default class StargridClient {
         height: BigInt(json.height),
         tx: json.tx,
         txhash: json.txhash,
-        events: json.events,
+        events: json.events.map((e: any) => ({
+          type: e.name,
+          name: e.name,
+          attributes: Object.fromEntries(
+            Object.entries(e.attributes as RawAttributes)
+              .map(([key, attr]) => [key, attr.value])
+          ),
+          indexes: Object.entries(e.attributes as RawAttributes)
+            .filter(([, attr]) => attr.indexed)
+            .map(([key]) => key),
+        })),
       });
     } else {
       this.#onMessageEvent.emit(msg);
